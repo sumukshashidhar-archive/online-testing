@@ -3,11 +3,12 @@ sys.path.append('.')
 import flask
 from flask import request, jsonify, Flask, render_template, redirect, url_for, request
 
+import uuid
 
 #other imports
 from src.microservices.authentication import authenticate
 
-
+server_storage = {}
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -23,11 +24,11 @@ def login():
     error = None
     if request.method == 'POST':
         if authenticate(request.form['username'], request.form['password'])!= False:
-            return redirect(url_for('dash', args='admin'))
-    return render_template('login.html', error=error)
+            
+            return redirect(url_for('dash',token=token)
+        else:
+            error = 'Wrong Username / Password'
 
-@app.route('/dash', methods=['GET'])
-def dash():
-    return render_template('teacher_dash.html', name=request.args['args'])
+    return render_template('login.html', error=error)
 
 app.run()

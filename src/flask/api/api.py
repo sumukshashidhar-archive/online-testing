@@ -28,10 +28,11 @@ mapper = {
 
 # ROUTES
 
+
 @app.route('/', methods=['GET'])
 def home():
-    return '''<h1>Distant Reading Archive</h1>
-<p>A prototype API for distant reading of science fiction novels.</p>'''
+    return '''<h1>Online Testing API</h1>
+<p>The Helper API for the Online Testing Website.</p>'''
 
 
 @app.route('/api/v1/retrieve/test')
@@ -48,6 +49,10 @@ def get_test():
 
 @app.route('/api/v1/deatuh')
 def destroy_token():
+    '''
+    Used for logging out.
+    :return: JSON
+    '''
     pass
 
 

@@ -5,17 +5,23 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
-def create_user(name=None, password=None, email_id=None, role=None):
-    statement = "INSERT INTO auth (id, username, password, email, role) VALUES (%s, %s, %s, %s, %s)"
-    if name and password and email_id and role:
-        hashed_password = generate_password_hash(password, method='sha256')
-        user_uuid = str(uuid.uuid4())
+def create_user(name=None, password=None, role=None, cursor=None):
+    statement = "INSERT INTO auth (id, username, password, role) VALUES (%s, %s, %s, %s)"
+    if name and password and role and cursor:
+        try:
+            hashed_password = generate_password_hash(password, method='sha256')
+            user_uuid = str(uuid.uuid4())
+            # write to db after this
+            val = (user_uuid, name, password, role)
+            try:
+
+                cursor.execute(statement, val) 
+            except:
+                return {'status':1223, 'message':'asdasdasdass', 'object':None}
+            return {'status':200, 'message':'ALL OK. ADDED USER', 'object':None}
+        except:
+            return {'status':500, 'message':'DB CONNECTION FAILED', 'object':None}
         
-        # write to db after this
-        val = (user_uuid, name, password, email_id, role)
-        mycursor.execute(sql, val) 
-        mydb.commit()
-        pass
     else:
         return {'status':503, 'message':'did not recieve name or password', 'object':None}
 
@@ -27,7 +33,7 @@ def get_user(name=None):
     '''
     user = None
     ## testing only
-    user = {'id':str(uuid.uuid4()), 'name':'sumuk', 'password':'asdadas'}
+    user = {'id':'16fd2706-8baf-433b-82eb-8c7fada847da', 'name':'sumuk', 'password':'asdadas', 'role':'student'}
     return {'status':200, 'message':'OK', 'object':user}
 
 
@@ -35,11 +41,14 @@ def get_by_id(id):
     return {'name':'sumuk'}
 
 
-def get_all_users():
+def get_all_users(mycursor=None):
     '''
     Must return all users in the table that we have now
     '''
-    return None
+    if mycursor:
+        mycursor.execute("SELECT * FROM auth")
+        myresult = mycursor.fetchall()
+        return myresult
 
 
 def check_password(name=None, auth_pass=None):

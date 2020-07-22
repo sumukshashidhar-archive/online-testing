@@ -4,7 +4,8 @@ try:
     mydb = mysql.connector.connect(
       host="13.235.17.41",
       user="sumuk",
-      password="sumuk"
+      password="sumuk", 
+      database='testdb'
     )
 except mysql.connector.Error as err:
   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -14,3 +15,14 @@ except mysql.connector.Error as err:
   else:
     print(err)
 print(mydb)
+
+
+mycursor = mydb.cursor()
+
+
+mycursor.execute("DROP TABLE customers")
+mycursor.execute("SHOW TABLES")
+
+
+for x in mycursor:
+  print(x)
